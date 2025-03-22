@@ -1,0 +1,70 @@
+# prompt: Monte Carlo Approach to Blackjack
+
+import random
+
+def deal_card():
+  """Deals a random card from a standard deck."""
+  return random.randint(1, 11)
+
+def calculate_hand_value(hand):
+  """Calculates the value of a hand in Blackjack."""
+  ace_count = hand.count(11)
+  total = sum(hand)
+
+  while total > 21 and ace_count > 0:
+    total -= 10
+    ace_count -= 1
+
+  return total
+
+def play_blackjack():
+  """Simulates a game of Blackjack using Monte Carlo approach."""
+  player_hand = []
+  dealer_hand = []
+
+  # Deal initial hands
+  for _ in range(2):
+    player_hand.append(deal_card())
+    dealer_hand.append(deal_card())
+
+  # Player's turn
+  while True:
+    player_value = calculate_hand_value(player_hand)
+    print(f"Player's hand: {player_hand}, Value: {player_value}")
+    print(f"Dealer's showing: [{dealer_hand[0]}, ?]")
+
+    if player_value == 21:
+      print("Blackjack! Player wins.")
+      return
+
+    if player_value > 21:
+      print("Player busts! Dealer wins.")
+      return
+
+    action = input("Hit or stand? (h/s): ").lower()
+    if action == 'h':
+      player_hand.append(deal_card())
+    else:
+      break
+
+  # Dealer's turn
+  dealer_value = calculate_hand_value(dealer_hand)
+  print(f"Dealer's hand: {dealer_hand}, Value: {dealer_value}")
+
+  while dealer_value < 17:
+    dealer_hand.append(deal_card())
+    dealer_value = calculate_hand_value(dealer_hand)
+    print(f"Dealer hits: {dealer_hand}, Value: {dealer_value}")
+
+  if dealer_value > 21:
+    print("Dealer busts! Player wins.")
+  elif dealer_value > player_value:
+    print("Dealer wins.")
+  elif dealer_value < player_value:
+    print("Player wins.")
+  else:
+    print("Push (Tie).")
+
+
+if __name__ == "__main__":
+  play_blackjack()
